@@ -43,7 +43,7 @@ class Settings(BaseSettings):
     SEED_DEMO_DATA: bool = True
 
     SEED_ADMIN_EMAIL: str = "admin@hertex.dev"
-    SEED_ADMIN_PASSWORD: str = "Admin@12345"
+    SEED_ADMIN_PASSWORD: str = ""
     SEED_DEMO_TENANT: str = "Hertex Demo Co"
 
     PASSWORD_MIN_LENGTH: int = 12
