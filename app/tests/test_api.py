@@ -1,3 +1,4 @@
+import os
 import time
 from uuid import uuid4
 
@@ -20,7 +21,7 @@ async def test_health(client):
 async def test_login_returns_tokens_and_identity(client):
     response = await client.post(
         "/api/v1/auth/login",
-        json={"email": "admin@hertex.dev", "password": "Admin@12345"},
+        json={"email": "admin@hertex.dev", "password": os.environ.get("SEED_ADMIN_PASSWORD", "test-admin-password")},
     )
     assert response.status_code == 200
     body = response.json()
@@ -163,7 +164,7 @@ async def test_weak_passwords_are_rejected(client):
 async def test_login_sets_refresh_cookie_and_csrf(client):
     response = await client.post(
         "/api/v1/auth/login",
-        json={"email": "admin@hertex.dev", "password": "Admin@12345"},
+        json={"email": "admin@hertex.dev", "password": os.environ.get("SEED_ADMIN_PASSWORD", "test-admin-password")},
     )
     assert response.status_code == 200
     assert client.cookies.get("hertex_refresh")
@@ -174,7 +175,7 @@ async def test_login_sets_refresh_cookie_and_csrf(client):
 async def test_cookie_refresh_requires_csrf_header(client):
     await client.post(
         "/api/v1/auth/login",
-        json={"email": "admin@hertex.dev", "password": "Admin@12345"},
+        json={"email": "admin@hertex.dev", "password": os.environ.get("SEED_ADMIN_PASSWORD", "test-admin-password")},
     )
     rejected = await client.post("/api/v1/auth/refresh", json={})
     assert rejected.status_code == 401
@@ -244,7 +245,7 @@ async def test_mfa_challenge_and_recovery_code(client, auth):
 async def test_revoking_session_invalidates_access_token(client):
     login = await client.post(
         "/api/v1/auth/login",
-        json={"email": "admin@hertex.dev", "password": "Admin@12345"},
+        json={"email": "admin@hertex.dev", "password": os.environ.get("SEED_ADMIN_PASSWORD", "test-admin-password")},
     )
     assert login.status_code == 200
     headers = {"Authorization": f"Bearer {login.json()['access_token']}"}

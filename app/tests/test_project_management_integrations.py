@@ -1,3 +1,4 @@
+import os
 import asyncio
 from datetime import date, timedelta
 from decimal import Decimal
@@ -383,7 +384,7 @@ async def test_invoice_paid_event_updates_invoice_link(client, auth):
 @pytest.mark.asyncio
 async def test_cross_tenant_project_data_is_invisible(client):
     admin_login = await client.post(
-        "/api/v1/auth/login", json={"email": "admin@hertex.dev", "password": "Admin@12345"}
+        "/api/v1/auth/login", json={"email": "admin@hertex.dev", "password": os.environ.get("SEED_ADMIN_PASSWORD", "test-admin-password")}
     )
     assert admin_login.status_code == 200, admin_login.text
     admin_auth = {"Authorization": f"Bearer {admin_login.json()['access_token']}"}

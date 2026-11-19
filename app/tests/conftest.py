@@ -15,6 +15,7 @@ os.environ["AUTO_SEED"] = "true"
 os.environ["SEED_DEMO_DATA"] = "true"
 os.environ["ENVIRONMENT"] = "test"
 os.environ["AUTH_RATE_LIMIT_PER_MINUTE"] = "1000"
+os.environ["SEED_ADMIN_PASSWORD"] = os.getenv("SEED_ADMIN_PASSWORD", "test-admin-password")
 
 import app.core.subscribers  # noqa: E402, F401
 from app.db.registry import Base  # noqa: E402
@@ -47,7 +48,7 @@ async def client():
 async def auth(client):
     response = await client.post(
         "/api/v1/auth/login",
-        json={"email": "admin@hertex.dev", "password": "Admin@12345"},
+        json={"email": "admin@hertex.dev", "password": os.environ["SEED_ADMIN_PASSWORD"]},
     )
     assert response.status_code == 200, response.text
     tokens = response.json()
